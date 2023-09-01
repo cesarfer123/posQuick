@@ -1,0 +1,53 @@
+<?php
+
+class Model extends Database
+{
+    
+    protected function get_allowed_columns($data){
+
+        if(!empty($this->allowed_columns)){
+
+            foreach ($data as $key => $value) {
+                // recorre el post
+                // in_array - verifica si el parametro esta en el segundo parametro (array)
+                if(!in_array($key,$this->allowed_columns)){
+                    // elimina la key que no encuentra en data
+                    unset($data[$key]);
+                }
+            }
+    
+        }
+
+        return $data;
+    }   
+
+    public function insert($data){
+
+            // $query="insert into users (username,email,password,date,role) values (:username,:email,:password,:date,:role)";
+            $clean_array=$this->get_allowed_columns($data,$this->table);
+            $keys=array_keys($clean_array);
+            $query="insert into $this->table";
+            // implode - une elementos de un array separandolo con el primer parametro que se le pase
+            $query.="(".implode(",",$keys) . ") values";
+            $query.="(:".implode(",:",$keys) . ")";
+            $db=new Database();
+            $db->query($query,$clean_array);
+
+    }
+    
+    public function where($data){
+
+            // "select * from users where email=:email && password=:password"
+            $keys=array_keys($data);
+            $query="select * from $this->table where ";
+            
+            foreach ($keys as $key) {
+                $query.="$key=:$key && ";
+            }
+            $query=trim($query,"&& ");
+            $db=new Database();
+            return $db->query($query,$data);
+    
+   
+    }
+}
