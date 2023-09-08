@@ -50,4 +50,24 @@ class Model extends Database
     
    
     }
+
+    public function first($data){
+
+        // "select * from users where email=:email && password=:password"
+        $keys=array_keys($data);
+        $query="select * from $this->table where ";
+        
+        foreach ($keys as $key) {
+            $query.="$key=:$key && ";
+        }
+        $query=trim($query,"&& ");
+        $db=new Database();
+        if($res=$db->query($query,$data)){
+
+            return $res[0];
+        }
+
+        return false;
+
+    }
 }

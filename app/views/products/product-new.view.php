@@ -5,7 +5,7 @@
             <h5 class="text-primary"><i class="fa fa-hamburger"></i>Add Product</h5>
             <div class="mb-3">
                 <label for="productControlInput1" class="form-label">Product Description</label>
-                <input value="<?=set_value('email'); ?>" name="description" type="text" class="form-control <?=!empty($errors['description']) ? 'border-danger' : ''; ?>" id="productControlInput1" placeholder="Product Name">
+                <input value="<?=set_value('description'); ?>" name="description" type="text" class="form-control <?=!empty($errors['description']) ? 'border-danger' : ''; ?>" id="productControlInput1" placeholder="Product Name">
                 <?php if(!empty($errors["description"])):?>
                     <small class="text-danger"><?=$errors["description"]; ?></small>
                 <?php endif;?>
@@ -35,8 +35,8 @@
                 <label class="form-label" for="formFile">Product Image</label>
                 <input type="file" name="image" class="form-control <?=!empty($errors['image']) ? 'border-danger' : ''; ?>" id="formFile">
             </div>
-            <?php if(!empty($errors["email"])):?>
-                <small class="text-danger"><?=$errors["email"]; ?></small>
+            <?php if(!empty($errors["image"])):?>
+                <small class="text-danger"><?=$errors["image"]; ?></small>
             <?php endif;?>
             <br>
             <button class="btn btn-danger float-end">Save</button>

@@ -16,14 +16,14 @@ class Product extends Model{
     ];
 
 
-    public function validate($data){
+    public function validate($data, $id=null){
 
         $errors=[];
 
         // validando description
         if(empty($data["description"])){
             $errors["description"]="Product description is required";
-        }else if(!preg_match("/[a-zA-z0-9 _-\&\(\)]+/",$data["description"])){
+        }else if(!preg_match("/[a-zA-z0-9 _\-\&\(\)]+/",$data["description"])){
             $errors["description"]="Only letters allowed in description";
         }
 
@@ -44,14 +44,18 @@ class Product extends Model{
         // validando image
         $max_size=4;
         $size=$max_size*(1024*1024);
-        if(empty($data["image"])){
-            $errors["image"]="Product image is required";
-        }else if(!($data["image"]["type"]=="image/jpeg" || $data["image"]["type"]=="image/png")){
-            $errors["image"]="Image must be a valid JPEG or PNG";
-        }else if($data["image"]["error"]>0){
-            $errors["image"]="The image failed to upload. Error no.".$data["image"]["error"];                            
-        }else if($data["image"]["size"]>$size){
-            $errors["image"]="The Image size must be lower than " . $max_size. " MB";
+
+        if(!$id || ($id && !empty($data["image"]))){
+
+            if(empty($data["image"])){
+                $errors["image"]="Product image is required";
+            }else if(!($data["image"]["type"]=="image/jpeg" || $data["image"]["type"]=="image/png")){
+                $errors["image"]="Image must be a valid JPEG or PNG";
+            }else if($data["image"]["error"]>0){
+                $errors["image"]="The image failed to upload. Error no.".$data["image"]["error"];                            
+            }else if($data["image"]["size"]>$size){
+                $errors["image"]="The Image size must be lower than " . $max_size. " MB";
+            }
         }
 
 
@@ -62,4 +66,9 @@ class Product extends Model{
     public function generate_barcode(){
         return "2222" . rand(1000,999999999);
     }
+
+    public function generate_filename($ext="jpg"){
+        return hash("sha1",rand(1000,999999999))."_".rand(1000,9999).".".$ext;                            
+    }
+
 }
