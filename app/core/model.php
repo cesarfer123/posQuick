@@ -24,7 +24,8 @@ class Model extends Database
     public function insert($data){
 
             // $query="insert into users (username,email,password,date,role) values (:username,:email,:password,:date,:role)";
-            $clean_array=$this->get_allowed_columns($data,$this->table);
+            show($data);die;
+            $clean_array=$this->get_allowed_columns($data);
             $keys=array_keys($clean_array);
             $query="insert into $this->table";
             // implode - une elementos de un array separandolo con el primer parametro que se le pase
@@ -32,6 +33,35 @@ class Model extends Database
             $query.="(:".implode(",:",$keys) . ")";
             $db=new Database();
             $db->query($query,$clean_array);
+
+    }
+
+    public function update($id,$data){
+
+        // $query="udpate users set id=:id, name=:name where id=$id";
+        $clean_array=$this->get_allowed_columns($data,$this->table);
+        $keys=array_keys($clean_array);
+
+        $query="update $this->table set ";
+        
+        foreach ($keys as $column) {
+            $query.=$column. "=:" .$column . ",";
+        }
+        $query=trim($query,",");
+        $query.=" where id=:id";
+        $clean_array["id"]=$id;    
+        $db=new Database();
+        $db->query($query,$clean_array);
+
+    }
+
+
+    public function delete($id){
+
+        $query="delete from $this->table where id=:id limit 1";
+        $clean_array["id"]=$id;    
+        $db=new Database();
+        $db->query($query,$clean_array);
 
     }
     

@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
             mkdir($folder,0777,true);
         }
         $ext=strtolower(pathinfo($_POST["image"]["name"],PATHINFO_EXTENSION));
-        $destination=$folder . $product->generate_filename();
+        $destination=$folder . $product->generate_filename($ext);
         move_uploaded_file($_POST["image"]["tmp_name"],$destination);
         $_POST["image"]=$destination;
         $product->insert($_POST);
