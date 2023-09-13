@@ -24,7 +24,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         move_uploaded_file($_POST["image"]["tmp_name"],$destination);
         $_POST["image"]=$destination;
         $product->insert($_POST);
-        // authenticate($_POST);
         redirect("admin&tab=products");
     }
 }

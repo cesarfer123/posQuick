@@ -24,7 +24,7 @@ class Model extends Database
     public function insert($data){
 
             // $query="insert into users (username,email,password,date,role) values (:username,:email,:password,:date,:role)";
-            show($data);die;
+            // show($data);die;
             $clean_array=$this->get_allowed_columns($data);
             $keys=array_keys($clean_array);
             $query="insert into $this->table";
