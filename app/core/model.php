@@ -9,7 +9,7 @@ class Model extends Database
 
             foreach ($data as $key => $value) {
                 // recorre el post
-                // in_array - verifica si el parametro esta en el segundo parametro (array)
+                // in_array - verifica si la key esta en el segundo parametro (array)
                 if(!in_array($key,$this->allowed_columns)){
                     // elimina la key que no encuentra en data
                     unset($data[$key]);
@@ -65,7 +65,7 @@ class Model extends Database
 
     }
     
-    public function where($data){
+    public function where($data,$limit=10,$offset=0,$order="desc",$order_colum="id"){
 
             // "select * from users where email=:email && password=:password"
             $keys=array_keys($data);
@@ -75,8 +75,20 @@ class Model extends Database
                 $query.="$key=:$key && ";
             }
             $query=trim($query,"&& ");
+            $query+=" order by $order_colum $order limit $limit offset $offset";
             $db=new Database();
             return $db->query($query,$data);
+    
+   
+    }
+
+    public function getAll($limit=10,$offset=0,$order="desc",$order_colum="id"){
+
+            $query="select * from $this->table order by $order_colum $order limit $limit offset $offset";
+
+            $db=new Database();
+
+            return $db->query($query);
     
    
     }

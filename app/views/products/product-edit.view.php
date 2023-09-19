@@ -1,4 +1,4 @@
-<?php require views_path('partials/header'); ?>
+ <?php require views_path('partials/header'); ?>
 
     <div class="container-fluid border rounded p-2 m-2 col-lg-4 mx-auto">
         <?php if(!empty($row)): ?>
