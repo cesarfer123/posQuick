@@ -16,7 +16,7 @@ if(!empty($row_data)){
 			if(!empty($OBJ["text"])){
 				// search
 				$text="%".$OBJ["text"]."%";
-				$query="select * from products where description like :find limit 10";
+				$query="select * from products where description like :find || barcode = :find limit 10";
 				$rows=$productsClass->query($query,['find'=>$text]);
 			}else{
 				// get all

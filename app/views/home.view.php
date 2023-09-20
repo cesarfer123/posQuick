@@ -2,7 +2,7 @@
     <div class="d-flex">
         <div style="min-height:600px;" class="shadow-sm col-7 p-4">
             <div class="input-group mb-3"> <h3>Items</h3>
-                <input oninput="search_item(event)" type="text" class="ms-4 form-control js-search" placeholder="Search" aria-label="Search" autofocus>
+                <input onkeyup="check_for_enter_key(event)" oninput="search_item(event)" type="text" class="ms-4 form-control js-search" placeholder="Search" aria-label="Search" autofocus>
                 <span class="input-group-text"><i class="fa fa-search"></i></span>
             </div>
             <div onclick="add_item(event)" class="js-products d-flex" style="flex-wrap: wrap;height:90%;">
@@ -27,7 +27,7 @@
             <div class="js-gtotal alert alert-danger" style="font-size:30px;">Total: S/0</div>
             <div class="">
                 <button class="btn btn-success my-2 w-100 py-4">Checkout</button>
-                <button class="btn btn-primary my-2 w-100">Clear All</button>
+                <button onclick="clear_all()" class="btn btn-primary my-2 w-100">Clear All</button>
             </div>
         </div>
     </div>
@@ -37,6 +37,7 @@
 
     let PRODUCTS=[];
     let ITEMS=[];
+    let BARCODE=false;
 
     function search_item(e){
         let text=e.target.value.trim();
@@ -110,7 +111,7 @@
                 `;
     }
 
-     function item_html(data){
+     function item_html(data,index){
 
         return `<!-- item --> 
                 <tr>
@@ -118,9 +119,9 @@
                     <td class="text-primary">
                         ${data.description}
                         <div class="input-group mb-3" style="max-width: 150px;">
-                            <span class="input-group-text" style="cursor: pointer;"><i class="fa-solid fa-minus text-primary"></i></span>
-                            <input type="text" class="form-control" placeholder="1" value="${data.qty}">
-                            <span class="input-group-text" style="cursor: pointer;"><i class="fa-solid fa-plus text-primary"></i></span>
+                            <span index=${index} onclick="change_qty('down',event)" class="input-group-text" style="cursor: pointer;"><i class="fa-solid fa-minus text-primary"></i></span>
+                            <input index=${index} onblur="change_qty('input',event)" type="text" class="form-control" placeholder="1" value="${data.qty}">
+                            <span index=${index} onclick="change_qty('up',event)"  class="input-group-text" style="cursor: pointer;"><i class="fa-solid fa-plus text-primary"></i></span>
                         </div>
                     </td>
                     <td style="font-size: 20px;">S/${data.amount}</td>
@@ -164,13 +165,50 @@
 
         let grand_total=0;
         for(let i=ITEMS.length -1; i>=0;i--){
-            items_div.innerHTML+=item_html(ITEMS[i]);
+            items_div.innerHTML+=item_html(ITEMS[i],i);
             grand_total+=(ITEMS[i].qty*ITEMS[i].amount)
         }
 
         let gtotal_div=document.querySelector(".js-gtotal");
-        gtotal_div.innerHTML="TOTAL: " + grand_total;
+        gtotal_div.innerHTML="TOTAL: S/" + grand_total;
 
+    }
+
+    function clear_all(){
+
+        if(!confirm("are you sure you want to cler all items in the list?!!")){
+            return;
+        }
+
+        ITEMS=[];
+        refresh_items_display();
+    }
+
+    function change_qty(direction,e){
+        let index=e.currentTarget.getAttribute("index");
+        if(direction=="up"){
+            ITEMS[index].qty+=1;
+        }else if(direction=="down"){
+            ITEMS[index].qty-=1;
+        }else{
+            ITEMS[index].qty=parseInt(e.currentTarget.value);
+        }
+
+        // make sure its not less than 1
+
+        if(ITEMS[index].qty<1){
+            ITEMS[index].qty=1;
+        }
+
+        refresh_items_display();
+    }
+
+    function check_for_enter_key(e){
+
+        console.log(e.keyCode);
+        if(e.keyCode==13){
+            BARCODE=true;
+        }
     }
 
     send_data({
