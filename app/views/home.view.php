@@ -1,4 +1,9 @@
 <?php require views_path('partials/header'); ?>
+    <style>
+        .hide{
+            display: none;
+        }
+    </style>
     <div class="d-flex">
         <div style="min-height:600px;" class="shadow-sm col-7 p-4">
             <div class="input-group mb-3"> <h3>Items</h3>
@@ -26,19 +31,33 @@
             </div>
             <div class="js-gtotal alert alert-danger" style="font-size:30px;">Total: S/0</div>
             <div class="">
-                <button class="btn btn-success my-2 w-100 py-4">Checkout</button>
+                <button onclick="show_amount_paid_modal();" class="btn btn-success my-2 w-100 py-4">Checkout</button>
                 <button onclick="clear_all()" class="btn btn-primary my-2 w-100">Clear All</button>
             </div>
         </div>
     </div>
 
+<!-- modals -->
+<div class="js-amount-paid-modal hide">
 
+    <div style="background-color: #000000aa; width: 100%; height:100%; position:fixed; left:0px; top:0px; z-index: 10;">
+        <div style="width: 500px;min-height: 200px;background-color:white;padding:10px;margin:auto;margin-top:100px;">
+            <br>
+            <center><h5>checkout</h5></center>
+            <input type="text" class="form-control" placeholder="Enter amount paid">
+            <br>
+            <button onclick="hide_amount_paid_modal()" class="btn btn-secondary">Cancel</button>
+            <button class="btn btn-primary float-end">Next</button>
+        </div>
+    </div>
+</div>
+<!-- end modals -->
 <script>
 
     let PRODUCTS=[];
     let ITEMS=[];
     let BARCODE=false;
-
+    let main_input=document.querySelector('.js-search');
     function search_item(e){
         let text=e.target.value.trim();
 
@@ -54,12 +73,28 @@
         ajax.addEventListener("readystatechange", function(e){
             
             if(ajax.readyState==4){
+                let mydiv=document.querySelector(".js-products");
+                mydiv.innerHTML="";
+                PRODUCTS=[];
                 if(ajax.status==200){
-                    handle_result(ajax.responseText);
+                    if(ajax.responseText.trim()!=""){
+                        
+                        handle_result(ajax.responseText);
+                    }else{
+                        if(BARCODE){
+                            alert("that item was not found");
+                        }
+                    }
                 }else{
                     console.log("an error ocurred. Err Code" + ajax.status + " Err Message: " + ajax.statusText);
                   
                 }
+                // limpiar input si hemos presionado ENTER
+                if(BARCODE){
+                    main_input.value="";
+                    main_input.focus();
+                }
+                BARCODE=false;
             }
         
         }) 
@@ -78,18 +113,19 @@
 
             if(obj.data_type=="search"){
                
-                let mydiv=document.querySelector(".js-products");
-                mydiv.innerHTML="";
-                PRODUCTS=[];
-
+                let mydiv=document.querySelector(".js-products"); 
                 if(obj.data!=""){
 
                     PRODUCTS=obj.data;
                     for (let i = 0; i < obj.data.length; i++) {
                         mydiv.innerHTML+=product_html(obj.data[i],i);
                     }
-                }
 
+                    if(BARCODE && PRODUCTS.length==1){
+                        add_item_from_index(0);
+                    }
+
+                }
             }
         }
        
@@ -124,33 +160,42 @@
                             <span index=${index} onclick="change_qty('up',event)"  class="input-group-text" style="cursor: pointer;"><i class="fa-solid fa-plus text-primary"></i></span>
                         </div>
                     </td>
-                    <td style="font-size: 20px;">S/${data.amount}</td>
+                    <td style="font-size: 20px;">
+                        <b>S/${data.amount}</b>
+                        <button onclick="clear_item(${index})" class="float-end btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                    </td>
                 </tr>
                 <!-- end item--> 
                 `;
+    }
+
+    function add_item_from_index(index){
+
+        // check if items exists 
+        for (let i = ITEMS.length-1; i >= 0; i--) {
+            
+            if(ITEMS[i].id==PRODUCTS[index].id){
+
+                ITEMS[i].qty+=1;
+                refresh_items_display();
+                return;
+            }
+        } 
+        
+        let temp=PRODUCTS[index];
+        temp.qty=1;
+        console.log(temp);
+        ITEMS.push(temp);
+        refresh_items_display();
     }
 
 
     function add_item(e){
 
         if(e.target.tagName=="IMG"){
-            let index=e.target.getAttribute("index");
-            // check if items exists 
-            for (let i = ITEMS.length-1; i >= 0; i--) {
-                
-                if(ITEMS[i].id==PRODUCTS[index].id){
-
-                    ITEMS[i].qty+=1;
-                    refresh_items_display();
-                    return;
-                }
-            } 
-             
-            let temp=PRODUCTS[index];
-            temp.qty=1;
-            console.log(temp);
-            ITEMS.push(temp);
-            refresh_items_display();
+            
+            let index=e.target.getAttribute("index"); 
+            add_item_from_index(index)
         }
     }
 
@@ -184,6 +229,16 @@
         refresh_items_display();
     }
 
+    function clear_item(index){
+
+        if(!confirm("Remove item?!!")){
+            return;
+        }
+
+        ITEMS.splice(index,1);
+        refresh_items_display();
+    }
+
     function change_qty(direction,e){
         let index=e.currentTarget.getAttribute("index");
         if(direction=="up"){
@@ -208,7 +263,18 @@
         console.log(e.keyCode);
         if(e.keyCode==13){
             BARCODE=true;
+            search_item(e);
         }
+    }
+
+    function show_amount_paid_modal(){
+        let mydiv=document.querySelector(".js-amount-paid-modal");
+        mydiv.classList.remove("hide");
+    }
+
+    function hide_amount_paid_modal(){
+        let mydiv=document.querySelector(".js-amount-paid-modal");
+        mydiv.classList.add("hide");
     }
 
     send_data({
