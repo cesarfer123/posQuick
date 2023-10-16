@@ -15,5 +15,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     }
 }
 
-require views_path("auth/signup");
+
  
+if(Auth::access('admin')){
+
+    require views_path("auth/signup");
+}else{
+
+    Auth::setMessage("only admins can create users");
+    require views_path('auth/denied'); 
+}

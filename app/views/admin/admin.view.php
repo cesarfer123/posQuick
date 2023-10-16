@@ -16,6 +16,9 @@
                 <a href="index.php?pg=admin&tab=products">
                     <li class="list-group-item <?=$tab=='products' ? 'active' : ''?>"><i class="fa fa-hamburger"></i> Products</li>
                 </a>
+                <a href="index.php?pg=admin&tab=sales">
+                    <li class="list-group-item <?=$tab=='sales' ? 'active' : ''?>"><i class="fa fa-cash"></i> Sales</li>
+                </a>
                 <a href="index.php?pg=logout">
                     <li class="list-group-item"><i class="fa fa-sign-out-alt"></i> Logout</li>
                 </a> 
@@ -33,7 +36,14 @@
                         # code...
                         require views_path("admin/products"); 
                         break;
-                    
+                    case 'users':
+                        # code...
+                        require views_path("admin/users"); 
+                        break;
+                    case 'sales':
+                        # code...
+                        require views_path("admin/sales"); 
+                        break;
                     default:
                         # code...
                         break;

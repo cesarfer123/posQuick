@@ -37,7 +37,9 @@
                         </div>
                         <br>
                         <button class="btn btn-primary float-end">Signup</button>
-                        <button class="btn btn-danger">Cancel</button>
+                        <a href="index.php?pg=admin&tab=users">
+                                <button type="button" class="btn btn-danger">Cancel</button>
+                        </a>
                 </form>
         </div>
     
