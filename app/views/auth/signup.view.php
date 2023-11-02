@@ -3,7 +3,7 @@
         <div class="container-fluid border col-lg-5 col-md-7 mt-5 p-4">
                 <form method="post">
                         <center>
-                                <h3><i class="fa-solid fa-location-pin"></i>User Signup</h3>
+                                <h3><i class="fa-solid fa-location-pin"></i>Create User</h3>
                                 <div><?=esc(APP_NAME);?></div>
                         </center>
                         <br>
@@ -36,7 +36,7 @@
                                 <?php endif;?>
                         </div>
                         <br>
-                        <button class="btn btn-primary float-end">Signup</button>
+                        <button class="btn btn-primary float-end">Create</button>
                         <a href="index.php?pg=admin&tab=users">
                                 <button type="button" class="btn btn-danger">Cancel</button>
                         </a>

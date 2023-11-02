@@ -234,7 +234,7 @@
         }
 
         let gtotal_div=document.querySelector(".js-gtotal");
-        gtotal_div.innerHTML="TOTAL: S/" + grand_total;
+        gtotal_div.innerHTML="TOTAL: S/" + grand_total.toFixed(2);
         GTOTAL=grand_total;
 
     }

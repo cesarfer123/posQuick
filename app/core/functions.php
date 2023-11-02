@@ -47,13 +47,27 @@ function auth($column){
     return "Unkwon";
 }
 
-function crop($filename,$size=600){
+function crop($filename,$size=400,$type='product'){
 
     $ext=strtolower(pathinfo($filename,PATHINFO_EXTENSION));
-    $cropped_file=preg_replace("/\.$ext/","_cropped.".$ext,$filename);
+    $cropped_file=preg_replace("/\.$ext$/","_cropped.".$ext, $filename);
+
+    // if cropped file already exists
     if (file_exists($cropped_file)) {
         return $cropped_file;
     }
+
+    // if file to be cropped does not exist
+    if(!file_exists($filename)) {
+        if($type=="male"){
+            return "assets/images/user_male.png";
+        }else if($type=="female"){
+            return "assets/images/user_female.png";
+        }else{
+            return "assets/images/no_image.jpeg";
+        }
+    }
+
     // create image resource
     switch ($ext) {
         case 'jpg':

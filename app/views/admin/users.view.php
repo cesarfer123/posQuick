@@ -4,6 +4,7 @@
             <tr>
                 <th>Image</th>
                 <th>Username</th>
+                <th>Gender</th>
                 <th>Email</th>
                 <th>Role</th>
                 <th>Date</th>
@@ -21,21 +22,24 @@
                 <?php foreach($users as $user): ?>
                     <tr>
                         <td>
-                            <img src="<?=crop($user["image"])?>" style="width:100%; max-width:100px;">
+                            <a href="index.php?pg=profile&id=<?=$user['id']?>">
+                                <img src="<?=crop($user['image'],400,$user['gender'])?>" style="width:100%; max-width:100px;">
+                            </a>
                         </td>
                         <td>
                             <a href="index.php?pg=profile&id=<?=$user['id']?>">
                                 <?=esc($user["username"])?>
                             </a>
                         </td>
+                        <td><?=esc($user["gender"])?></td>
                         <td><?=esc($user["email"])?></td>
                         <td><?=esc($user["role"])?></td>
                         <td><?=date("jS M, Y",strtotime($user["date"]))?></td>
                         <td>
-                            <a href="index.php?pg=user-edit&id=<?=$user['id']?>">
+                            <a href="index.php?pg=edit-user&id=<?=$user['id']?>">
                                 <button class="btn btn-success btn-sm">Edit</button>
                             </a>
-                            <a href="index.php?pg=user-delete&id=<?=$user['id']?>">
+                            <a href="index.php?pg=delete-user&id=<?=$user['id']?>">
                                 <button class="btn btn-danger btn-sm">Delete</button>
                             </a>
 
