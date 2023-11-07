@@ -50,5 +50,6 @@
         
         </tbody>
     </table>
+    <?php $pager->display(count($users)); ?>
 </div>
 </div>

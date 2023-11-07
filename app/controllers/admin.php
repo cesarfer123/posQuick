@@ -9,7 +9,11 @@ if($tab=="products"){
 
 if($tab=="sales"){
     $salesClass=new Sale();
-    $sales=$salesClass->query("select * from sales order by id desc");
+    $limit=4;
+    $pager=new Pager($limit);
+    $offset=$pager->offset;
+
+    $sales=$salesClass->query("select * from sales order by id desc limit $limit offset $offset");
 
     // get today's sales total
     $year=date("Y");
@@ -27,8 +31,12 @@ if($tab=="sales"){
 }
 
 if($tab=="users"){
+    $limit=10;
+    $pager=new Pager($limit);
+    $offset=$pager->offset;
     $usersClass=new Product();
-    $users=$usersClass->query("select * from users order by id desc");
+    $users=$usersClass->query("select * from users order by id desc limit $limit offset $offset");
+
 }
 
 if(Auth::access('supervisor')){

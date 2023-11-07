@@ -59,5 +59,7 @@
         
         </tbody>
     </table>
-</div>
+    <?php
+        $pager->display();
+    ?>                
 </div>
